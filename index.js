@@ -24,50 +24,49 @@ async function sendTelegramMessage(message) {
 }
 
 // 🚀 scrape Microsoft jobs (working version)
+const puppeteer = require("puppeteer-core");
+
 async function fetchMicrosoftJobs() {
-    try {
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
-          });
-  
-      const page = await browser.newPage();
-  
-      await page.goto(
-        "https://apply.careers.microsoft.com/careers?domain=microsoft.com&location=India&sort_by=timestamp",
-        { waitUntil: "domcontentloaded" }
-      );
-  
-      // wait for page to load properly
-      await new Promise(resolve => setTimeout(resolve, 5000));
-  
-      const jobs = await page.evaluate(() => {
-        const links = document.querySelectorAll("a[href*='/job/']");
-        let data = [];
-  
-        links.forEach(link => {
-          const title = link.innerText.trim();
-          const href = link.href;
-  
-          if (title && href) {
-            data.push({
-              title,
-              link: href,
-            });
-          }
-        });
-  
-        return data;
+  try {
+    const browser = await puppeteer.launch({
+      executablePath: "/usr/bin/chromium",
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+
+    await page.goto(
+      "https://apply.careers.microsoft.com/careers?domain=microsoft.com&location=India&sort_by=timestamp",
+      { waitUntil: "domcontentloaded" }
+    );
+
+    await new Promise(r => setTimeout(r, 5000));
+
+    const jobs = await page.evaluate(() => {
+      const links = document.querySelectorAll("a[href*='/job/']");
+      let data = [];
+
+      links.forEach(link => {
+        const title = link.innerText.trim();
+        const href = link.href;
+
+        if (title && href) {
+          data.push({ title, link: href });
+        }
       });
-  
-      await browser.close();
-      return jobs;
-  
-    } catch (error) {
-      console.error("Error scraping:", error.message);
-      return [];
-    }
+
+      return data;
+    });
+
+    await browser.close();
+    return jobs;
+
+  } catch (error) {
+    console.error("Error scraping:", error.message);
+    return [];
   }
+}
 // 🔁 main logic
 async function checkJobs() {
     console.log("Checking for new jobs...");
