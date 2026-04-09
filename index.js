@@ -29,7 +29,6 @@ async function sendTelegramMessage(message) {
 async function fetchMicrosoftJobs() {
   try {
     const browser = await puppeteer.launch({
-      executablePath: "/usr/bin/chromium",
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
