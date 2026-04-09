@@ -24,7 +24,7 @@ async function sendTelegramMessage(message) {
 }
 
 // 🚀 scrape Microsoft jobs (working version)
-const puppeteer = require("puppeteer-core");
+
 
 async function fetchMicrosoftJobs() {
   try {
