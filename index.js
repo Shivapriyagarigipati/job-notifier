@@ -1,7 +1,7 @@
 require("dotenv").config();
 const axios = require("axios");
 const cron = require("node-cron");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
